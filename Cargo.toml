@@ -9,7 +9,7 @@ repository = "https://github.com/h3x4d3c1m4l/wimlib-sys.git"
 readme = "README.md"
 keywords = ["wim", "wimlib", "libwim", "bindings"]
 
-links = "wim-1.13"
+links = "wim"
 
 [build-dependencies]
 bindgen = "0.49"
