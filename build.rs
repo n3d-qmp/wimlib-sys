@@ -88,6 +88,8 @@ fn main() {
         .whitelist_function("wimlib_verify_wim")
         .whitelist_function("wimlib_write")
         .whitelist_function("wimlib_write_to_fd")
+        // nocopy for handles
+        .no_copy("WIMStruct")
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
