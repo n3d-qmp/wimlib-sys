@@ -364,7 +364,7 @@ dependencies = [
 
 [[package]]
 name = "wimlib-sys"
-version = "0.2.3"
+version = "0.1.13"
 dependencies = [
  "bindgen 0.49.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
