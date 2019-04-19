@@ -1,0 +1,15 @@
+[package]
+name = "wimlib-sys"
+version = "0.1.13"
+authors = ["Sander in 't Hout <sander@inthout.eu>"]
+description = "FFI bindings for wimlib."
+license = "GPLv3"
+homepage = "https://github.com/h3x4d3c1m4l/wimlib-sys"
+repository = "https://github.com/h3x4d3c1m4l/wimlib-sys.git"
+readme = "README.md"
+keywords = ["wim", "wimlib", "libwim", "bindings"]
+
+links = "wim-1.13"
+
+[build-dependencies]
+bindgen = "0.49"
