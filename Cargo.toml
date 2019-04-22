@@ -8,8 +8,13 @@ homepage = "https://github.com/h3x4d3c1m4l/wimlib-sys"
 repository = "https://github.com/h3x4d3c1m4l/wimlib-sys.git"
 readme = "README.md"
 keywords = ["wim", "wimlib", "libwim", "bindings"]
+edition = "2018"
 
 links = "wim"
 
 [build-dependencies]
 bindgen = "0.49"
+
+[dependencies]
+sha2 = "0.8"
+lazy_static = "1.3"

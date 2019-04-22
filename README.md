@@ -18,7 +18,9 @@ To build, just run:
 `cargo build`
 
 To run the checks, run:
-`cargo run`
+`cargo run -- --test-threads=1`
+
+Running them sequentially is needed because the tests share a state.
 
 ### macOS
 
@@ -29,3 +31,12 @@ Not tested yet, but should work.
 It should work on Windows, but I'm not sure how to make Windows find the dll and C header.
 
 If you find out, please let me know.
+
+## License
+
+This library is licensed under GPLv3 or later. It links to the following resources:
+
+* [Wimlib](https://wimlib.net/)
+  * licensed under GPLv3 or later and optionally under LGPLv3 or later: https://wimlib.net/git/?p=wimlib;f=COPYING;hb=HEAD
+* [cat.jpg](cat.jpg) by [Orangeaurochs](https://www.flickr.com/photos/orangeaurochs/)
+  * licensed under CC 2.0
