@@ -1,9 +1,9 @@
 [package]
 name = "wimlib-sys"
-version = "0.1.13"
+version = "1.0.0"
 authors = ["Sander in 't Hout <sander@inthout.eu>"]
 description = "FFI bindings for wimlib."
-license = "GPL-3.0-or-later"
+license = "GPL-3.0-or-later OR LGPL-3.0-or-later"
 homepage = "https://github.com/h3x4d3c1m4l/wimlib-sys"
 repository = "https://github.com/h3x4d3c1m4l/wimlib-sys.git"
 readme = "README.md"
