@@ -1,16 +1,15 @@
-#[cfg(test)]
-
-use sha2::{Sha256};
-use sha2::digest::Digest;
 use crate::*;
-use std::ptr::null_mut;
 use lazy_static::lazy_static;
+use sha2::digest::Digest;
+#[cfg(test)]
+use sha2::Sha256;
 use std::env::temp_dir;
 use std::ffi::CString;
-use std::path::PathBuf;
-use std::str::FromStr;
 use std::fs::{create_dir_all, remove_dir_all, File};
 use std::io::copy;
+use std::path::PathBuf;
+use std::ptr::null_mut;
+use std::str::FromStr;
 
 static CAT_IMAGE_FILE_NAME: &str = "cat.jpg";
 static DOGS_IMAGE_FILE_NAME: &str = "dogs.jpg";
@@ -22,7 +21,6 @@ lazy_static! {
         tmp_path_buf.push("wimlib-sys-test");
         tmp_path_buf.to_string_lossy().to_string()
     };
-
     static ref TMP_FILE_PATH: String = {
         let mut tmp_path_buf = PathBuf::from_str(&TMP_DIR).unwrap();
         tmp_path_buf.push(TMP_FILE_NAME);
@@ -38,7 +36,10 @@ fn make_wim() {
         // create wim
         let wim_struct_ptr_box = Box::new(null_mut());
         let wim_struct_ptr_box_ptr = Box::into_raw(wim_struct_ptr_box);
-        let create_res = wimlib_create_new_wim(wimlib_compression_type_WIMLIB_COMPRESSION_TYPE_LZMS, wim_struct_ptr_box_ptr);
+        let create_res = wimlib_create_new_wim(
+            wimlib_compression_type_WIMLIB_COMPRESSION_TYPE_LZMS,
+            wim_struct_ptr_box_ptr,
+        );
         if create_res != 0 {
             panic!("wimlib_create_new_wim failed: error {}", create_res);
         }
@@ -48,7 +49,11 @@ fn make_wim() {
         // add new empty image to wim
         let mut wim_img_idx: i32 = 0;
         let wim_img_name = CString::new(WIM_IMAGE_NAME).unwrap();
-        let add_image_res = wimlib_add_empty_image(wim_struct_ptr, wim_img_name.as_ptr() as *const i8, &mut wim_img_idx);
+        let add_image_res = wimlib_add_empty_image(
+            wim_struct_ptr,
+            wim_img_name.as_ptr() as *const i8,
+            &mut wim_img_idx,
+        );
         if add_image_res != 0 {
             panic!("wimlib_add_empty_image failed: error {}", add_image_res);
         }
@@ -56,7 +61,13 @@ fn make_wim() {
         // add cat image to the newly empty image
         let add_tree_src_path = CString::new(CAT_IMAGE_FILE_NAME).unwrap();
         let add_tree_dst_path = CString::new(CAT_IMAGE_FILE_NAME).unwrap();
-        let add_tree_res = wimlib_add_tree(wim_struct_ptr, wim_img_idx, add_tree_src_path.as_ptr() as *const i8, add_tree_dst_path.as_ptr() as *const i8, 0);
+        let add_tree_res = wimlib_add_tree(
+            wim_struct_ptr,
+            wim_img_idx,
+            add_tree_src_path.as_ptr() as *const i8,
+            add_tree_dst_path.as_ptr() as *const i8,
+            0,
+        );
         if add_tree_res != 0 {
             panic!("wimlib_add_tree failed: error {}", add_tree_res);
         }
@@ -64,14 +75,26 @@ fn make_wim() {
         // add dog image
         let add_tree_src_path = CString::new(DOGS_IMAGE_FILE_NAME).unwrap();
         let add_tree_dst_path = CString::new(DOGS_IMAGE_FILE_NAME).unwrap();
-        let add_tree_res = wimlib_add_tree(wim_struct_ptr, wim_img_idx, add_tree_src_path.as_ptr() as *const i8, add_tree_dst_path.as_ptr() as *const i8, 0);
+        let add_tree_res = wimlib_add_tree(
+            wim_struct_ptr,
+            wim_img_idx,
+            add_tree_src_path.as_ptr() as *const i8,
+            add_tree_dst_path.as_ptr() as *const i8,
+            0,
+        );
         if add_tree_res != 0 {
             panic!("wimlib_add_tree failed: error {}", add_tree_res);
         }
 
         // write wim to TMP_FILE_PATH
         let write_dst_path = CString::new(TMP_FILE_PATH.to_string()).unwrap();
-        let write_res = wimlib_write(wim_struct_ptr, write_dst_path.as_ptr() as *const i8, -1, 0, 0);
+        let write_res = wimlib_write(
+            wim_struct_ptr,
+            write_dst_path.as_ptr() as *const i8,
+            -1,
+            0,
+            0,
+        );
         if write_res != 0 {
             panic!("wimlib_write failed: error {}", write_res);
         }
@@ -106,7 +129,10 @@ fn unpack_wim_and_check_animal_image_hash() {
         let wim_img_name = CString::new(WIM_IMAGE_NAME).unwrap();
         let wim_img_idx = wimlib_resolve_image(wim_struct_ptr, wim_img_name.as_ptr() as *const i8);
         if wim_img_idx < 1 {
-            panic!("wimlib_resolve_image failed: invalid image number {}", wim_img_idx);
+            panic!(
+                "wimlib_resolve_image failed: invalid image number {}",
+                wim_img_idx
+            );
         }
 
         // unpack image
@@ -114,7 +140,14 @@ fn unpack_wim_and_check_animal_image_hash() {
         let cat_image_path = CString::new(CAT_IMAGE_FILE_NAME).unwrap();
         let dogs_image_path = CString::new(DOGS_IMAGE_FILE_NAME).unwrap();
         let extract_file_names = [cat_image_path.as_ptr(), dogs_image_path.as_ptr()];
-        let extract_res = wimlib_extract_paths(wim_struct_ptr, wim_img_idx, extract_target_path.as_ptr() as *const i8, extract_file_names.as_ptr(), extract_file_names.len(), 0);
+        let extract_res = wimlib_extract_paths(
+            wim_struct_ptr,
+            wim_img_idx,
+            extract_target_path.as_ptr() as *const i8,
+            extract_file_names.as_ptr(),
+            extract_file_names.len(),
+            0,
+        );
         if extract_res < 0 {
             panic!("wimlib_extract_paths failed: error {}", extract_res);
         }
